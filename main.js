@@ -15,7 +15,7 @@ async function main() {
         const knownHosts = core.getInput("known_hosts")
         const options = core.getInput("options")
 
-        let cmd = ["ansible-playbook", playbook]
+        let cmd = ["ansible-playbook", playbook, '-vvvv']
 
         if (options) {
             cmd.push(options.replace(/\n/g, " "))
