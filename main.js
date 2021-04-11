@@ -9,10 +9,8 @@ async function main() {
         const playbook = core.getInput("playbook", { required: true })
         const requirements = core.getInput("requirements")
         const directory = core.getInput("directory")
-        const key = core.getInput("key")
         const inventory = core.getInput("inventory")
         const vaultPassword = core.getInput("vault_password")
-        const knownHosts = core.getInput("known_hosts")
         const options = core.getInput("options")
 
         let cmd = ["ansible-playbook", playbook]
@@ -40,14 +38,6 @@ async function main() {
             }
         }
 
-        if (key) {
-            const keyFile = ".ansible_key"
-            fs.writeFileSync(keyFile, key + os.EOL, { mode: 0600 })
-            core.saveState("keyFile", keyFile)
-            cmd.push("--key-file")
-            cmd.push(keyFile)
-        }
-
         if (inventory) {
             const inventoryFile = ".ansible_inventory"
             fs.writeFileSync(inventoryFile, inventory, { mode: 0600 })
@@ -64,23 +54,7 @@ async function main() {
             cmd.push(vaultPasswordFile)
         }
 
-        if (knownHosts) {
-            const knownHostsFile = ".ansible_known_hosts"
-            fs.writeFileSync(knownHostsFile, knownHosts, { mode: 0600 })
-            core.saveState("knownHostsFile", knownHostsFile)
-            let known_hosts_param = [
-                "--ssh-common-args=",
-                "\"",
-                "-o UserKnownHostsFile=",
-                knownHostsFile,
-                "\""
-            ].join('')
-            cmd.push(known_hosts_param)
-            process.env.ANSIBLE_HOST_KEY_CHECKING = "True"
-        } else {
-            process.env.ANSIBLE_HOST_KEY_CHECKING = "False"
-        }
-
+        process.env.ANSIBLE_HOST_KEY_CHECKING = "True"
         process.env.ANSIBLE_FORCE_COLOR = "True"
 
         await exec.exec(cmd.join(' '))

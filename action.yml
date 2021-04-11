@@ -7,23 +7,19 @@ inputs:
   playbook:
     description: Ansible playbook filepath
     required: true
-  requirements:
-    description: Ansible Galaxy requirements filepath
-    required: false
   directory:
     description: Root directory of Ansible project (defaults to current)
     required: false
-  key:
-    description: SSH private key used to connect to the host
-    required: false
+    default: "./.ansible"
   inventory:
     description: Custom content to write into hosts
     required: false
+  requirements:
+    description: Ansible Galaxy requirements filepath
+    required: false
+    default: "requirements.yml"
   vault_password:
     description: The password used for decrypting vaulted files
-    required: false
-  known_hosts:
-    description: Contents of SSH known_hosts file
     required: false
   options:
     description: Extra options that should be passed to ansible-playbook command
